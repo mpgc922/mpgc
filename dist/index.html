@@ -27,7 +27,7 @@
     }
     .card h2 { color: white; font-size: 1.1rem; font-weight: 600; margin-bottom: 20px; }
     .form-row { display: flex; gap: 12px; margin-bottom: 14px; }
-    .form-group { flex: 1; }
+    .form-group { flex: 1; margin-bottom: 14px; }
     label { display: block; color: rgba(255,255,255,0.7); font-size: 13px; font-weight: 500; margin-bottom: 6px; }
     input, textarea {
       width: 100%; background: rgba(255,255,255,0.08);
@@ -49,15 +49,16 @@
     }
     .btn-primary { background: linear-gradient(135deg, #e96c75, #f5a623); color: white; }
     .btn-secondary { background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.2); }
+    .btn-danger { background: rgba(220,53,69,0.3); color: #ff6b7a; border: 1px solid rgba(220,53,69,0.3); }
     .btn:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
     .toast {
       position: fixed; top: 20px; right: 20px; padding: 14px 20px;
       border-radius: 12px; font-weight: 500; font-size: 14px;
-      opacity: 0; transition: all 0.3s; z-index: 9999;
+      opacity: 0; transition: all 0.3s; z-index: 9999; min-width: 220px; text-align: center;
     }
     .toast.show { opacity: 1; }
     .toast.success { background: #28a745; color: white; }
-    .toast.error { background: #dc3545; color: white; }
+    .toast.error   { background: #dc3545; color: white; }
     .toast.loading { background: #007bff; color: white; }
     .note-card {
       background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
@@ -74,7 +75,7 @@
       font-size: 12px; color: rgba(255,255,255,0.4);
       background: rgba(255,255,255,0.05); padding: 4px 10px; border-radius: 20px;
     }
-    .note-text { color: rgba(255,255,255,0.85); line-height: 1.7; font-size: 15px; }
+    .note-text { color: rgba(255,255,255,0.85); line-height: 1.7; font-size: 15px; white-space: pre-wrap; }
     .delete-btn {
       background: rgba(220,53,69,0.2); border: 1px solid rgba(220,53,69,0.3);
       color: #ff6b7a; padding: 5px 12px; border-radius: 8px;
@@ -96,9 +97,19 @@
     .search-bar span { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: rgba(255,255,255,0.4); }
     .setup-info {
       background: rgba(245,166,35,0.1); border: 1px solid rgba(245,166,35,0.3);
-      border-radius: 12px; padding: 16px; color: rgba(255,255,255,0.8); font-size: 14px; margin-bottom: 20px;
+      border-radius: 12px; padding: 16px; color: rgba(255,255,255,0.8);
+      font-size: 14px; margin-bottom: 20px; line-height: 1.8;
     }
-    @media (max-width: 600px) { .form-row { flex-direction: column; } .header h1 { font-size: 1.8rem; } }
+    .connected-badge {
+      display: inline-block; background: rgba(40,167,69,0.2);
+      border: 1px solid rgba(40,167,69,0.4); color: #5fdb80;
+      padding: 6px 14px; border-radius: 20px; font-size: 13px;
+      font-weight: 500; margin-bottom: 16px;
+    }
+    @media (max-width: 600px) {
+      .form-row { flex-direction: column; }
+      .header h1 { font-size: 1.8rem; }
+    }
   </style>
 </head>
 <body>
@@ -113,44 +124,38 @@
   <div class="card" id="setupCard">
     <h2>⚙️ One-Time Setup (per device)</h2>
     <div class="setup-info">
-      Enter your GitHub details below. Saved locally on this device only.
+      📌 Your repo is already set:<br>
+      &nbsp;&nbsp;• Username: <strong>mpgc922</strong><br>
+      &nbsp;&nbsp;• Repo: <strong>mpgc</strong><br>
+      &nbsp;&nbsp;• Notes file: <strong>dist/notes.json</strong><br><br>
+      You only need to enter your <strong>GitHub Personal Access Token</strong> below.<br>
+      Get it from: GitHub → Settings → Developer Settings → Personal Access Tokens → Tokens (classic) → repo scope ✅
     </div>
-    <div class="form-row">
-      <div class="form-group">
-        <label>GitHub Username</label>
-        <input id="ghUser" placeholder="e.g. krishnm10" />
-      </div>
-      <div class="form-group">
-        <label>Repository Name</label>
-        <input id="ghRepo" placeholder="e.g. my-notes-app" />
-      </div>
-    </div>
-    <div class="form-group" style="margin-bottom:14px">
-      <label>GitHub Personal Access Token (repo scope)</label>
-      <input id="ghToken" type="password" placeholder="ghp_xxxxxxxxxxxx" />
+    <div class="form-group">
+      <label>GitHub Personal Access Token</label>
+      <input id="ghToken" type="password" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" />
     </div>
     <div class="btn-group">
-      <button class="btn btn-primary" onclick="saveConfig()">💾 Save & Connect</button>
+      <button class="btn btn-primary" onclick="saveConfig()">🔗 Connect to GitHub</button>
     </div>
   </div>
 
   <!-- WRITE NOTE -->
-  <div class="card">
+  <div class="card" id="writeCard" style="display:none">
+    <div class="connected-badge">✅ Connected to mpgc922/mpgc</div>
     <h2>✍️ Write a Note</h2>
-    <div class="form-row">
-      <div class="form-group">
-        <label>Your Name</label>
-        <input id="authorName" placeholder="Enter your name" />
-      </div>
+    <div class="form-group">
+      <label>Your Name</label>
+      <input id="authorName" placeholder="Enter your name" />
     </div>
-    <div class="form-group" style="margin-bottom:14px">
+    <div class="form-group">
       <label>Note</label>
       <textarea id="noteText" placeholder="Write your note here..."></textarea>
     </div>
     <div class="btn-group">
-      <button class="btn btn-primary" onclick="addNote()">💾 Save Note</button>
+      <button class="btn btn-primary"   onclick="addNote()">💾 Save Note</button>
       <button class="btn btn-secondary" onclick="loadNotes()">🔄 Refresh</button>
-      <button class="btn btn-secondary" onclick="showConfig()">⚙️ Settings</button>
+      <button class="btn btn-secondary" onclick="showConfig()">⚙️ Change Token</button>
     </div>
   </div>
 
@@ -162,105 +167,104 @@
   </div>
 
   <!-- NOTES LIST -->
-  <div class="card">
+  <div class="card" id="notesCard" style="display:none">
     <h2>📋 All Notes</h2>
     <div class="search-bar">
       <span>🔍</span>
-      <input id="searchInput" placeholder="Search notes..." oninput="filterNotes()" />
+      <input id="searchInput" placeholder="Search by name or note..." oninput="filterNotes()" />
     </div>
-    <div id="notesList">
-      <div class="empty-state"><div>🔌</div><p>Configure GitHub settings above to load notes</p></div>
-    </div>
+    <div id="notesList"></div>
   </div>
 
 </div>
 <div class="toast" id="toast"></div>
 
 <script>
-  let allNotes = [];
-  let fileSHA  = '';
-
-  const LS_USER  = 'gh_user';
-  const LS_REPO  = 'gh_repo';
+  // ── CONFIG — hardcoded for your repo ──────────────────────
+  const GH_USER  = 'mpgc922';
+  const GH_REPO  = 'mpgc';
+  const GH_FILE  = 'dist/notes.json';   // path inside repo
   const LS_TOKEN = 'gh_token';
   const LS_NAME  = 'gh_author';
 
-  // ─── Init ────────────────────────────────────────────────
+  let allNotes = [];
+  let fileSHA  = '';
+
+  // ── Init ─────────────────────────────────────────────────
   window.onload = function () {
-    const user  = localStorage.getItem(LS_USER);
-    const repo  = localStorage.getItem(LS_REPO);
     const token = localStorage.getItem(LS_TOKEN);
     const name  = localStorage.getItem(LS_NAME);
-
-    if (name)  document.getElementById('authorName').value = name;
-
-    if (user && repo && token) {
-      document.getElementById('setupCard').style.display = 'none';
+    if (name) document.getElementById('authorName').value = name;
+    if (token) {
+      document.getElementById('ghToken').value = token;
+      showWriteCard();
       loadNotes();
-    } else {
-      document.getElementById('ghUser').value  = user  || '';
-      document.getElementById('ghRepo').value  = repo  || '';
-      document.getElementById('ghToken').value = token || '';
     }
   };
 
-  // ─── Save Config ─────────────────────────────────────────
+  // ── Save Token ───────────────────────────────────────────
   function saveConfig() {
-    const user  = document.getElementById('ghUser').value.trim();
-    const repo  = document.getElementById('ghRepo').value.trim();
     const token = document.getElementById('ghToken').value.trim();
-    if (!user || !repo || !token) return showToast('Fill all fields', 'error');
-    localStorage.setItem(LS_USER, user);
-    localStorage.setItem(LS_REPO, repo);
+    if (!token) return showToast('Enter your GitHub token', 'error');
     localStorage.setItem(LS_TOKEN, token);
-    document.getElementById('setupCard').style.display = 'none';
-    showToast('Config saved!', 'success');
+    showWriteCard();
     loadNotes();
   }
 
   function showConfig() {
-    document.getElementById('setupCard').style.display = 'block';
-    window.scrollTo(0,0);
+    document.getElementById('setupCard').style.display  = 'block';
+    document.getElementById('writeCard').style.display  = 'none';
+    document.getElementById('notesCard').style.display  = 'none';
+    document.getElementById('statsBar').style.display   = 'none';
   }
 
-  // ─── GitHub API helpers ──────────────────────────────────
+  function showWriteCard() {
+    document.getElementById('setupCard').style.display = 'none';
+    document.getElementById('writeCard').style.display = 'block';
+  }
+
+  // ── GitHub API URL ───────────────────────────────────────
   function apiUrl() {
-    const user = localStorage.getItem(LS_USER);
-    const repo = localStorage.getItem(LS_REPO);
-    return `https://api.github.com/repos/${user}/${repo}/contents/notes.json`;
+    return `https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${GH_FILE}`;
   }
 
   function headers() {
     return {
       'Authorization': `token ${localStorage.getItem(LS_TOKEN)}`,
-      'Content-Type':  'application/json',
-      'Accept':        'application/vnd.github.v3+json'
+      'Content-Type' : 'application/json',
+      'Accept'       : 'application/vnd.github.v3+json'
     };
   }
 
-  // ─── Load Notes ──────────────────────────────────────────
+  // ── Load Notes ───────────────────────────────────────────
   async function loadNotes() {
     showToast('Loading notes...', 'loading');
     try {
       const res  = await fetch(apiUrl(), { headers: headers() });
-      const data = await res.json();
-      fileSHA  = data.sha;
-      const content = JSON.parse(atob(data.content.replace(/\n/g, '')));
-      allNotes = content.notes || [];
+      if (!res.ok) {
+        const err = await res.json();
+        showToast(`Error ${res.status}: ${err.message}`, 'error');
+        return;
+      }
+      const data    = await res.json();
+      fileSHA       = data.sha;
+      const decoded = JSON.parse(atob(data.content.replace(/\n/g, '')));
+      allNotes      = decoded.notes || [];
       displayNotes(allNotes);
       updateStats(allNotes);
-      showToast(`${allNotes.length} notes loaded`, 'success');
+      document.getElementById('notesCard').style.display = 'block';
+      showToast(`${allNotes.length} notes loaded ✅`, 'success');
     } catch (e) {
-      showToast('Load failed. Check settings.', 'error');
+      showToast('Load failed: ' + e.message, 'error');
     }
   }
 
-  // ─── Add Note ────────────────────────────────────────────
+  // ── Add Note ─────────────────────────────────────────────
   async function addNote() {
     const author = document.getElementById('authorName').value.trim();
     const text   = document.getElementById('noteText').value.trim();
     if (!author || !text) return showToast('Fill name & note', 'error');
-    if (!fileSHA) return showToast('Load notes first (click Refresh)', 'error');
+    if (!fileSHA) return showToast('Click Refresh first', 'error');
 
     localStorage.setItem(LS_NAME, author);
 
@@ -278,39 +282,44 @@
         headers: headers(),
         body: JSON.stringify({
           message: `Add note by ${author}`,
-          content: btoa(JSON.stringify({ notes: updated })),
+          content: btoa(unescape(encodeURIComponent(JSON.stringify({ notes: updated })))),
           sha: fileSHA
         })
       });
+      if (!res.ok) {
+        const err = await res.json();
+        return showToast(`Save error: ${err.message}`, 'error');
+      }
       const data = await res.json();
-      fileSHA  = data.content.sha;
-      allNotes = updated;
+      fileSHA    = data.content.sha;
+      allNotes   = updated;
       displayNotes(allNotes);
       updateStats(allNotes);
       document.getElementById('noteText').value = '';
-      showToast('Note saved to GitHub!', 'success');
+      showToast('Note saved to GitHub! 🎉', 'success');
     } catch (e) {
-      showToast('Save failed. Try again.', 'error');
+      showToast('Save failed: ' + e.message, 'error');
     }
   }
 
-  // ─── Delete Note ─────────────────────────────────────────
+  // ── Delete Note ──────────────────────────────────────────
   async function deleteNote(id) {
     if (!confirm('Delete this note?')) return;
     const updated = allNotes.filter(n => n.id !== id);
+    showToast('Deleting...', 'loading');
     try {
       const res = await fetch(apiUrl(), {
         method: 'PUT',
         headers: headers(),
         body: JSON.stringify({
           message: 'Delete note',
-          content: btoa(JSON.stringify({ notes: updated })),
+          content: btoa(unescape(encodeURIComponent(JSON.stringify({ notes: updated })))),
           sha: fileSHA
         })
       });
       const data = await res.json();
-      fileSHA  = data.content.sha;
-      allNotes = updated;
+      fileSHA    = data.content.sha;
+      allNotes   = updated;
       displayNotes(allNotes);
       updateStats(allNotes);
       showToast('Note deleted!', 'success');
@@ -319,7 +328,7 @@
     }
   }
 
-  // ─── Display ─────────────────────────────────────────────
+  // ── Display ──────────────────────────────────────────────
   function displayNotes(notes) {
     document.getElementById('statsBar').style.display = 'flex';
     const div = document.getElementById('notesList');
@@ -331,7 +340,7 @@
       <div class="note-card">
         <div class="note-meta">
           <span class="note-author">👤 ${n.author}</span>
-          <div style="display:flex;gap:8px;align-items:center">
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
             <span class="note-time">🕐 ${n.timestamp}</span>
             <button class="delete-btn" onclick="deleteNote(${n.id})">🗑 Delete</button>
           </div>
@@ -340,6 +349,7 @@
       </div>`).join('');
   }
 
+  // ── Search ───────────────────────────────────────────────
   function filterNotes() {
     const q = document.getElementById('searchInput').value.toLowerCase();
     displayNotes(allNotes.filter(n =>
@@ -347,19 +357,21 @@
     ));
   }
 
+  // ── Stats ────────────────────────────────────────────────
   function updateStats(notes) {
     document.getElementById('totalNotes').textContent   = notes.length;
     document.getElementById('totalAuthors').textContent = [...new Set(notes.map(n => n.author))].length;
-    const today = new Date().toLocaleDateString('en-IN', {day:'2-digit'});
-    document.getElementById('todayNotes').textContent   = notes.filter(n => n.timestamp.startsWith(today)).length;
+    const today = new Date().toLocaleDateString('en-IN');
+    document.getElementById('todayNotes').textContent   = notes.filter(n => n.timestamp.includes(today.split('/')[0])).length;
   }
 
+  // ── Toast ────────────────────────────────────────────────
   function showToast(msg, type = 'success') {
     const t = document.getElementById('toast');
     t.textContent = msg;
-    t.className = `toast ${type} show`;
+    t.className   = `toast ${type} show`;
     clearTimeout(window._tt);
-    window._tt = setTimeout(() => t.className = 'toast', 3000);
+    window._tt = setTimeout(() => t.className = 'toast', 4000);
   }
 </script>
 </body>
