@@ -3,159 +3,556 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My Self-Contained Notes</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <title>📝 My Notes — Anywhere Access</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    * { box-sizing: border-box; }
-    body { font-family: 'Inter', sans-serif; max-width: 900px; margin: 0 auto; padding: 20px;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; color: #333; }
-    .app-container { background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); border-radius: 24px; padding: 32px; box-shadow: 0 25px 45px rgba(0,0,0,0.1); }
-    h1 { color: #1a1a1a; font-weight: 600; margin: 0 0 32px; text-align: center; }
-    .input-section { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); padding: 24px; border-radius: 16px; margin-bottom: 24px; color: white; }
-    input, textarea { width: 100%; padding: 14px 16px; margin: 5px 0; border: none; border-radius: 12px; font-family: inherit; font-size: 16px; }
-    textarea { height: 120px; resize: vertical; }
-    button { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 14px 24px; border: none; border-radius: 12px; font-weight: 500; cursor: pointer; margin: 5px; transition: all 0.3s; }
-    button:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
-    .button-group { display: flex; gap: 10px; flex-wrap: wrap; }
-    .entry { background: white; padding: 20px; margin: 16px 0; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-left: 5px solid #667eea; }
-    .entry-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-    .entry-name { font-weight: 600; color: #1a1a1a; }
-    .entry-time { font-size: 13px; color: #666; }
-    #fileInput { display: none; }
-    .status { padding: 10px; margin: 10px 0; border-radius: 8px; text-align: center; }
-    .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .header {
+      text-align: center;
+      padding: 40px 0 30px;
+      color: white;
+    }
+
+    .header h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #e96c75, #f5a623);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 8px;
+    }
+
+    .header p {
+      color: rgba(255,255,255,0.6);
+      font-size: 14px;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 20px;
+      padding: 28px;
+      margin-bottom: 20px;
+    }
+
+    .card h2 {
+      color: white;
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .form-row {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .form-group {
+      flex: 1;
+    }
+
+    label {
+      display: block;
+      color: rgba(255,255,255,0.7);
+      font-size: 13px;
+      font-weight: 500;
+      margin-bottom: 6px;
+    }
+
+    input, textarea, select {
+      width: 100%;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 12px;
+      padding: 14px 16px;
+      color: white;
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      transition: all 0.3s;
+      outline: none;
+    }
+
+    input::placeholder, textarea::placeholder {
+      color: rgba(255,255,255,0.3);
+    }
+
+    input:focus, textarea:focus {
+      border-color: #e96c75;
+      background: rgba(255,255,255,0.12);
+      box-shadow: 0 0 0 3px rgba(233,108,117,0.15);
+    }
+
+    textarea { height: 130px; resize: vertical; }
+
+    .btn-group {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 6px;
+    }
+
+    .btn {
+      padding: 13px 24px;
+      border: none;
+      border-radius: 12px;
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.3s;
+      flex: 1;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #e96c75, #f5a623);
+      color: white;
+    }
+
+    .btn-secondary {
+      background: rgba(255,255,255,0.1);
+      color: white;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    }
+
+    .toast {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 14px 20px;
+      border-radius: 12px;
+      font-weight: 500;
+      font-size: 14px;
+      opacity: 0;
+      transition: all 0.3s;
+      z-index: 9999;
+    }
+
+    .toast.show { opacity: 1; transform: translateY(0); }
+    .toast.success { background: #28a745; color: white; }
+    .toast.error { background: #dc3545; color: white; }
+    .toast.loading { background: #007bff; color: white; }
+
+    .notes-list { }
+
+    .note-card {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 14px;
+      border-left: 4px solid #e96c75;
+      transition: all 0.3s;
+    }
+
+    .note-card:hover {
+      background: rgba(255,255,255,0.08);
+      transform: translateX(4px);
+    }
+
+    .note-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .note-author {
+      font-weight: 600;
+      color: #f5a623;
+      font-size: 15px;
+    }
+
+    .note-time {
+      font-size: 12px;
+      color: rgba(255,255,255,0.4);
+      background: rgba(255,255,255,0.05);
+      padding: 4px 10px;
+      border-radius: 20px;
+    }
+
+    .note-text {
+      color: rgba(255,255,255,0.85);
+      line-height: 1.7;
+      font-size: 15px;
+    }
+
+    .delete-btn {
+      background: rgba(220,53,69,0.2);
+      border: 1px solid rgba(220,53,69,0.3);
+      color: #ff6b7a;
+      padding: 5px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .delete-btn:hover {
+      background: rgba(220,53,69,0.4);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 50px 20px;
+      color: rgba(255,255,255,0.3);
+    }
+
+    .empty-state div { font-size: 48px; margin-bottom: 12px; }
+
+    .stats {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .stat {
+      flex: 1;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      padding: 16px;
+      text-align: center;
+      min-width: 100px;
+    }
+
+    .stat-value {
+      font-size: 28px;
+      font-weight: 700;
+      color: #e96c75;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: rgba(255,255,255,0.5);
+      margin-top: 4px;
+    }
+
+    .search-bar {
+      position: relative;
+      margin-bottom: 20px;
+    }
+
+    .search-bar input {
+      padding-left: 44px;
+    }
+
+    .search-bar span {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: rgba(255,255,255,0.4);
+      font-size: 18px;
+    }
+
+    .setup-info {
+      background: rgba(245,166,35,0.1);
+      border: 1px solid rgba(245,166,35,0.3);
+      border-radius: 12px;
+      padding: 16px;
+      color: rgba(255,255,255,0.8);
+      font-size: 14px;
+      margin-bottom: 20px;
+    }
+
+    .setup-info a {
+      color: #f5a623;
+    }
+
+    @media (max-width: 600px) {
+      .form-row { flex-direction: column; }
+      .header h1 { font-size: 1.8rem; }
+    }
   </style>
 </head>
 <body>
-  <div class="app-container">
-    <h1>📝 Self-Contained Notes</h1>
-    
-    <div class="input-section">
-      <input id="name" placeholder="👤 Your name" />
-      <textarea id="note" placeholder="✍️ Write your note..."></textarea>
-      <div class="button-group">
-        <button onclick="saveNote()">💾 Save Note</button>
-        <button onclick="saveAsHtml()">📤 Save as HTML File</button>
-        <button onclick="document.getElementById('fileInput').click()">📥 Load from HTML</button>
-      </div>
-      <input type="file" id="fileInput" accept=".html" onchange="loadFromHtml(event)">
-    </div>
+<div class="container">
 
-    <div id="entries"><h3>📋 Your Notes</h3></div>
-    <div id="status"></div>
+  <div class="header">
+    <h1>📝 My Notes</h1>
+    <p>Access from anywhere • No database • Shared across all systems</p>
   </div>
 
-  <script>
-    // Load notes from localStorage or HTML data
-    let notes = [];
-    window.onload = function() {
+  <!-- SETUP CARD (only shown if not configured) -->
+  <div class="card" id="setupCard">
+    <h2>⚙️ One-Time Setup</h2>
+    <div class="setup-info">
+      1. Go to <a href="https://jsonbin.io" target="_blank">jsonbin.io</a> → Sign up free<br>
+      2. Create a Bin → Copy the <strong>Bin ID</strong> and <strong>API Key</strong><br>
+      3. Paste below and click Save Config
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>JSONBin API Key</label>
+        <input id="apiKeyInput" placeholder="$2a$10$..." />
+      </div>
+      <div class="form-group">
+        <label>Bin ID</label>
+        <input id="binIdInput" placeholder="65f3a..." />
+      </div>
+    </div>
+    <div class="btn-group">
+      <button class="btn btn-primary" onclick="saveConfig()">💾 Save Config & Connect</button>
+    </div>
+  </div>
+
+  <!-- WRITE NOTE CARD -->
+  <div class="card">
+    <h2>✍️ Write a Note</h2>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Your Name</label>
+        <input id="authorName" placeholder="Enter your name" />
+      </div>
+    </div>
+    <div class="form-group" style="margin-bottom:14px">
+      <label>Note</label>
+      <textarea id="noteText" placeholder="Write your note here..."></textarea>
+    </div>
+    <div class="btn-group">
+      <button class="btn btn-primary" onclick="saveNote()">💾 Save Note</button>
+      <button class="btn btn-secondary" onclick="loadNotes()">🔄 Refresh Notes</button>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats" id="statsBar" style="display:none">
+    <div class="stat">
+      <div class="stat-value" id="totalNotes">0</div>
+      <div class="stat-label">Total Notes</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value" id="totalAuthors">0</div>
+      <div class="stat-label">Authors</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value" id="todayNotes">0</div>
+      <div class="stat-label">Today</div>
+    </div>
+  </div>
+
+  <!-- NOTES LIST CARD -->
+  <div class="card">
+    <h2>📋 All Notes</h2>
+
+    <div class="search-bar">
+      <span>🔍</span>
+      <input id="searchInput" placeholder="Search notes..." oninput="filterNotes()" />
+    </div>
+
+    <div class="notes-list" id="notesList">
+      <div class="empty-state">
+        <div>🔌</div>
+        <p>Configure JSONBin above to load notes</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Toast Notification -->
+<div class="toast" id="toast"></div>
+
+<script>
+  const STORAGE_KEY_API   = 'nb_api_key';
+  const STORAGE_KEY_BIN   = 'nb_bin_id';
+  const STORAGE_KEY_NAME  = 'nb_author';
+
+  let allNotes = [];
+
+  // ─── Init ───────────────────────────────────────────────
+  window.onload = function () {
+    const apiKey = localStorage.getItem(STORAGE_KEY_API);
+    const binId  = localStorage.getItem(STORAGE_KEY_BIN);
+    const author = localStorage.getItem(STORAGE_KEY_NAME);
+
+    if (author) document.getElementById('authorName').value = author;
+
+    if (apiKey && binId) {
+      document.getElementById('setupCard').style.display = 'none';
       loadNotes();
-      displayEntries();
+    } else {
+      document.getElementById('apiKeyInput').value = apiKey || '';
+      document.getElementById('binIdInput').value  = binId  || '';
+    }
+  };
+
+  // ─── Save Config ─────────────────────────────────────────
+  function saveConfig() {
+    const apiKey = document.getElementById('apiKeyInput').value.trim();
+    const binId  = document.getElementById('binIdInput').value.trim();
+    if (!apiKey || !binId) return showToast('Enter both API Key and Bin ID', 'error');
+    localStorage.setItem(STORAGE_KEY_API, apiKey);
+    localStorage.setItem(STORAGE_KEY_BIN, binId);
+    document.getElementById('setupCard').style.display = 'none';
+    showToast('Config saved!', 'success');
+    loadNotes();
+  }
+
+  // ─── Load Notes from JSONBin ──────────────────────────────
+  async function loadNotes() {
+    const apiKey = localStorage.getItem(STORAGE_KEY_API);
+    const binId  = localStorage.getItem(STORAGE_KEY_BIN);
+    if (!apiKey || !binId) return;
+
+    showToast('Loading notes...', 'loading');
+    try {
+      const res = await fetch(`https://api.jsonbin.io/v3/b/${binId}/latest`, {
+        headers: { 'X-Master-Key': apiKey }
+      });
+      const data = await res.json();
+      allNotes = data.record.notes || [];
+      displayNotes(allNotes);
+      updateStats(allNotes);
+      showToast(`${allNotes.length} notes loaded`, 'success');
+    } catch (err) {
+      showToast('Failed to load. Check API Key & Bin ID', 'error');
+    }
+  }
+
+  // ─── Save Note to JSONBin ─────────────────────────────────
+  async function saveNote() {
+    const author = document.getElementById('authorName').value.trim();
+    const text   = document.getElementById('noteText').value.trim();
+    if (!author || !text) return showToast('Fill name & note', 'error');
+
+    const apiKey = localStorage.getItem(STORAGE_KEY_API);
+    const binId  = localStorage.getItem(STORAGE_KEY_BIN);
+    if (!apiKey || !binId) return showToast('Setup not done!', 'error');
+
+    localStorage.setItem(STORAGE_KEY_NAME, author);
+
+    const newNote = {
+      id: Date.now(),
+      author,
+      text,
+      timestamp: new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })
     };
 
-    function saveNote() {
-      const name = document.getElementById('name').value.trim();
-      const noteText = document.getElementById('note').value.trim();
-      if (!name || !noteText) return showStatus('Fill name & note', 'error');
+    const updatedNotes = [newNote, ...allNotes];
 
-      const entry = {
-        name, note: noteText,
-        timestamp: new Date().toLocaleString('en-IN', {timeZone: 'Asia/Kolkata'})
-      };
-      notes.unshift(entry);
-      localStorage.setItem('notes', JSON.stringify(notes));
-      document.getElementById('name').value = '';
-      document.getElementById('note').value = '';
-      displayEntries();
-      showStatus('Note saved!');
-    }
-
-    function saveAsHtml() {
-      const htmlContent = generateHtmlWithNotes(notes);
-      const blob = new Blob([htmlContent], { type: 'text/html' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `my-notes-${new Date().toISOString().slice(0,10)}.html`;
-      a.click();
-      URL.revokeObjectURL(url);
-      showStatus('HTML file saved with all notes!');
-    }
-
-    function loadFromHtml(event) {
-      const file = event.target.files[0];
-      if (!file) return;
-      
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        const content = e.target.result;
-        const match = content.match(/<script id="embedded-notes" type="application\/json">([\s\S]*?)<\/script>/);
-        if (match) {
-          notes = JSON.parse(match[1]);
-          localStorage.setItem('notes', JSON.stringify(notes));
-          displayEntries();
-          showStatus(`Loaded ${notes.length} notes from HTML!`);
-        } else {
-          showStatus('No notes found in HTML file', 'error');
-        }
-      };
-      reader.readAsText(file);
-    }
-
-    function generateHtmlWithNotes(currentNotes) {
-      return `<!DOCTYPE html>
-<html>
-<head>
-  <title>My Self-Contained Notes</title>
-  <!-- Full CSS and HTML here (copy the entire page content above) -->
-</head>
-<body>
-  <!-- Paste the full HTML body content here -->
-  <script id="embedded-notes" type="application/json">${JSON.stringify(currentNotes)}</script>
-  <script>
-    // Auto-load embedded notes
-    const embeddedNotes = document.getElementById('embedded-notes');
-    if (embeddedNotes) {
-      notes = JSON.parse(embeddedNotes.textContent);
-      localStorage.setItem('notes', JSON.stringify(notes));
-      loadEntries();
-    }
-  </script>
-</body>
-</html>`;
-    }
-
-    function loadNotes() {
-      const saved = localStorage.getItem('notes');
-      notes = saved ? JSON.parse(saved) : [];
-    }
-
-    function displayEntries() {
-      const div = document.getElementById('entries');
-      if (!notes.length) {
-        div.innerHTML = '<h3>📋 Your Notes</h3><p>No notes yet...</p>';
-        return;
-      }
-      let html = '<h3>📋 Your Notes</h3>';
-      notes.forEach(e => {
-        html += `<div class="entry">
-          <div class="entry-header">
-            <div class="entry-name">${e.name}</div>
-            <div class="entry-time">${e.timestamp}</div>
-          </div>
-          <div>${e.note}</div>
-        </div>`;
+    showToast('Saving...', 'loading');
+    try {
+      await fetch(`https://api.jsonbin.io/v3/b/${binId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Master-Key': apiKey
+        },
+        body: JSON.stringify({ notes: updatedNotes })
       });
-      div.innerHTML = html;
+      allNotes = updatedNotes;
+      displayNotes(allNotes);
+      updateStats(allNotes);
+      document.getElementById('noteText').value = '';
+      showToast('Note saved!', 'success');
+    } catch (err) {
+      showToast('Save failed. Try again.', 'error');
+    }
+  }
+
+  // ─── Delete Note ──────────────────────────────────────────
+  async function deleteNote(id) {
+    if (!confirm('Delete this note?')) return;
+
+    const apiKey = localStorage.getItem(STORAGE_KEY_API);
+    const binId  = localStorage.getItem(STORAGE_KEY_BIN);
+
+    allNotes = allNotes.filter(n => n.id !== id);
+
+    try {
+      await fetch(`https://api.jsonbin.io/v3/b/${binId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Master-Key': apiKey
+        },
+        body: JSON.stringify({ notes: allNotes })
+      });
+      displayNotes(allNotes);
+      updateStats(allNotes);
+      showToast('Note deleted!', 'success');
+    } catch (err) {
+      showToast('Delete failed', 'error');
+    }
+  }
+
+  // ─── Display Notes ────────────────────────────────────────
+  function displayNotes(notes) {
+    const div = document.getElementById('notesList');
+    document.getElementById('statsBar').style.display = 'flex';
+
+    if (!notes.length) {
+      div.innerHTML = `<div class="empty-state"><div>📝</div><p>No notes yet. Write one above!</p></div>`;
+      return;
     }
 
-    function showStatus(msg, type = 'success') {
-      const status = document.getElementById('status');
-      status.textContent = msg;
-      status.className = `status ${type}`;
-      setTimeout(() => status.textContent = '', 3000);
-    }
-  </script>
+    div.innerHTML = notes.map(n => `
+      <div class="note-card">
+        <div class="note-meta">
+          <span class="note-author">👤 ${n.author}</span>
+          <div style="display:flex;gap:8px;align-items:center">
+            <span class="note-time">🕐 ${n.timestamp}</span>
+            <button class="delete-btn" onclick="deleteNote(${n.id})">🗑 Delete</button>
+          </div>
+        </div>
+        <div class="note-text">${n.text}</div>
+      </div>
+    `).join('');
+  }
+
+  // ─── Filter Notes ─────────────────────────────────────────
+  function filterNotes() {
+    const q = document.getElementById('searchInput').value.toLowerCase();
+    const filtered = allNotes.filter(n =>
+      n.author.toLowerCase().includes(q) ||
+      n.text.toLowerCase().includes(q)
+    );
+    displayNotes(filtered);
+  }
+
+  // ─── Stats ────────────────────────────────────────────────
+  function updateStats(notes) {
+    const today = new Date().toLocaleDateString('en-IN');
+    document.getElementById('totalNotes').textContent = notes.length;
+    document.getElementById('totalAuthors').textContent = [...new Set(notes.map(n => n.author))].length;
+    document.getElementById('todayNotes').textContent = notes.filter(n => n.timestamp.includes(today.split('/')[0])).length;
+  }
+
+  // ─── Toast ────────────────────────────────────────────────
+  function showToast(msg, type = 'success') {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = `toast ${type} show`;
+    clearTimeout(window._toastTimer);
+    window._toastTimer = setTimeout(() => t.className = 'toast', 3000);
+  }
+</script>
 </body>
 </html>
