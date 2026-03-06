@@ -3,292 +3,102 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>📝 My Notes — Anywhere Access</title>
+  <title>📝 My Notes</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-
     body {
       font-family: 'Inter', sans-serif;
       background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-      min-height: 100vh;
-      padding: 20px;
+      min-height: 100vh; padding: 20px;
     }
-
-    .container {
-      max-width: 900px;
-      margin: 0 auto;
-    }
-
-    .header {
-      text-align: center;
-      padding: 40px 0 30px;
-      color: white;
-    }
-
+    .container { max-width: 900px; margin: 0 auto; }
+    .header { text-align: center; padding: 40px 0 30px; color: white; }
     .header h1 {
-      font-size: 2.5rem;
-      font-weight: 700;
+      font-size: 2.5rem; font-weight: 700;
       background: linear-gradient(135deg, #e96c75, #f5a623);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      margin-bottom: 8px;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 8px;
     }
-
-    .header p {
-      color: rgba(255,255,255,0.6);
-      font-size: 14px;
-    }
-
+    .header p { color: rgba(255,255,255,0.6); font-size: 14px; }
     .card {
-      background: rgba(255,255,255,0.05);
-      backdrop-filter: blur(20px);
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 20px;
-      padding: 28px;
-      margin-bottom: 20px;
+      background: rgba(255,255,255,0.05); backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.1); border-radius: 20px;
+      padding: 28px; margin-bottom: 20px;
     }
-
-    .card h2 {
-      color: white;
-      font-size: 1.1rem;
-      font-weight: 600;
-      margin-bottom: 20px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
+    .card h2 { color: white; font-size: 1.1rem; font-weight: 600; margin-bottom: 20px; }
+    .form-row { display: flex; gap: 12px; margin-bottom: 14px; }
+    .form-group { flex: 1; }
+    label { display: block; color: rgba(255,255,255,0.7); font-size: 13px; font-weight: 500; margin-bottom: 6px; }
+    input, textarea {
+      width: 100%; background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15); border-radius: 12px;
+      padding: 14px 16px; color: white; font-family: 'Inter', sans-serif;
+      font-size: 15px; transition: all 0.3s; outline: none;
     }
-
-    .form-row {
-      display: flex;
-      gap: 12px;
-      margin-bottom: 14px;
-    }
-
-    .form-group {
-      flex: 1;
-    }
-
-    label {
-      display: block;
-      color: rgba(255,255,255,0.7);
-      font-size: 13px;
-      font-weight: 500;
-      margin-bottom: 6px;
-    }
-
-    input, textarea, select {
-      width: 100%;
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.15);
-      border-radius: 12px;
-      padding: 14px 16px;
-      color: white;
-      font-family: 'Inter', sans-serif;
-      font-size: 15px;
-      transition: all 0.3s;
-      outline: none;
-    }
-
-    input::placeholder, textarea::placeholder {
-      color: rgba(255,255,255,0.3);
-    }
-
+    input::placeholder, textarea::placeholder { color: rgba(255,255,255,0.3); }
     input:focus, textarea:focus {
-      border-color: #e96c75;
-      background: rgba(255,255,255,0.12);
+      border-color: #e96c75; background: rgba(255,255,255,0.12);
       box-shadow: 0 0 0 3px rgba(233,108,117,0.15);
     }
-
     textarea { height: 130px; resize: vertical; }
-
-    .btn-group {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-top: 6px;
-    }
-
+    .btn-group { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 6px; }
     .btn {
-      padding: 13px 24px;
-      border: none;
-      border-radius: 12px;
-      font-family: 'Inter', sans-serif;
-      font-weight: 600;
-      font-size: 14px;
-      cursor: pointer;
-      transition: all 0.3s;
-      flex: 1;
+      padding: 13px 24px; border: none; border-radius: 12px;
+      font-family: 'Inter', sans-serif; font-weight: 600; font-size: 14px;
+      cursor: pointer; transition: all 0.3s; flex: 1;
     }
-
-    .btn-primary {
-      background: linear-gradient(135deg, #e96c75, #f5a623);
-      color: white;
-    }
-
-    .btn-secondary {
-      background: rgba(255,255,255,0.1);
-      color: white;
-      border: 1px solid rgba(255,255,255,0.2);
-    }
-
-    .btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-    }
-
+    .btn-primary { background: linear-gradient(135deg, #e96c75, #f5a623); color: white; }
+    .btn-secondary { background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.2); }
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
     .toast {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      padding: 14px 20px;
-      border-radius: 12px;
-      font-weight: 500;
-      font-size: 14px;
-      opacity: 0;
-      transition: all 0.3s;
-      z-index: 9999;
+      position: fixed; top: 20px; right: 20px; padding: 14px 20px;
+      border-radius: 12px; font-weight: 500; font-size: 14px;
+      opacity: 0; transition: all 0.3s; z-index: 9999;
     }
-
-    .toast.show { opacity: 1; transform: translateY(0); }
+    .toast.show { opacity: 1; }
     .toast.success { background: #28a745; color: white; }
     .toast.error { background: #dc3545; color: white; }
     .toast.loading { background: #007bff; color: white; }
-
-    .notes-list { }
-
     .note-card {
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 16px;
-      padding: 20px;
-      margin-bottom: 14px;
-      border-left: 4px solid #e96c75;
-      transition: all 0.3s;
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 16px; padding: 20px; margin-bottom: 14px;
+      border-left: 4px solid #e96c75; transition: all 0.3s;
     }
-
-    .note-card:hover {
-      background: rgba(255,255,255,0.08);
-      transform: translateX(4px);
-    }
-
+    .note-card:hover { background: rgba(255,255,255,0.08); transform: translateX(4px); }
     .note-meta {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 10px;
-      flex-wrap: wrap;
-      gap: 8px;
+      display: flex; justify-content: space-between;
+      align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 8px;
     }
-
-    .note-author {
-      font-weight: 600;
-      color: #f5a623;
-      font-size: 15px;
-    }
-
+    .note-author { font-weight: 600; color: #f5a623; font-size: 15px; }
     .note-time {
-      font-size: 12px;
-      color: rgba(255,255,255,0.4);
-      background: rgba(255,255,255,0.05);
-      padding: 4px 10px;
-      border-radius: 20px;
+      font-size: 12px; color: rgba(255,255,255,0.4);
+      background: rgba(255,255,255,0.05); padding: 4px 10px; border-radius: 20px;
     }
-
-    .note-text {
-      color: rgba(255,255,255,0.85);
-      line-height: 1.7;
-      font-size: 15px;
-    }
-
+    .note-text { color: rgba(255,255,255,0.85); line-height: 1.7; font-size: 15px; }
     .delete-btn {
-      background: rgba(220,53,69,0.2);
-      border: 1px solid rgba(220,53,69,0.3);
-      color: #ff6b7a;
-      padding: 5px 12px;
-      border-radius: 8px;
-      font-size: 12px;
-      cursor: pointer;
-      transition: all 0.3s;
+      background: rgba(220,53,69,0.2); border: 1px solid rgba(220,53,69,0.3);
+      color: #ff6b7a; padding: 5px 12px; border-radius: 8px;
+      font-size: 12px; cursor: pointer; transition: all 0.3s;
     }
-
-    .delete-btn:hover {
-      background: rgba(220,53,69,0.4);
-    }
-
-    .empty-state {
-      text-align: center;
-      padding: 50px 20px;
-      color: rgba(255,255,255,0.3);
-    }
-
+    .delete-btn:hover { background: rgba(220,53,69,0.4); }
+    .empty-state { text-align: center; padding: 50px 20px; color: rgba(255,255,255,0.3); }
     .empty-state div { font-size: 48px; margin-bottom: 12px; }
-
-    .stats {
-      display: flex;
-      gap: 12px;
-      margin-bottom: 20px;
-      flex-wrap: wrap;
-    }
-
+    .stats { display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
     .stat {
-      flex: 1;
-      background: rgba(255,255,255,0.05);
+      flex: 1; background: rgba(255,255,255,0.05);
       border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 12px;
-      padding: 16px;
-      text-align: center;
-      min-width: 100px;
+      border-radius: 12px; padding: 16px; text-align: center; min-width: 100px;
     }
-
-    .stat-value {
-      font-size: 28px;
-      font-weight: 700;
-      color: #e96c75;
-    }
-
-    .stat-label {
-      font-size: 12px;
-      color: rgba(255,255,255,0.5);
-      margin-top: 4px;
-    }
-
-    .search-bar {
-      position: relative;
-      margin-bottom: 20px;
-    }
-
-    .search-bar input {
-      padding-left: 44px;
-    }
-
-    .search-bar span {
-      position: absolute;
-      left: 14px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: rgba(255,255,255,0.4);
-      font-size: 18px;
-    }
-
+    .stat-value { font-size: 28px; font-weight: 700; color: #e96c75; }
+    .stat-label { font-size: 12px; color: rgba(255,255,255,0.5); margin-top: 4px; }
+    .search-bar { position: relative; margin-bottom: 20px; }
+    .search-bar input { padding-left: 44px; }
+    .search-bar span { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: rgba(255,255,255,0.4); }
     .setup-info {
-      background: rgba(245,166,35,0.1);
-      border: 1px solid rgba(245,166,35,0.3);
-      border-radius: 12px;
-      padding: 16px;
-      color: rgba(255,255,255,0.8);
-      font-size: 14px;
-      margin-bottom: 20px;
+      background: rgba(245,166,35,0.1); border: 1px solid rgba(245,166,35,0.3);
+      border-radius: 12px; padding: 16px; color: rgba(255,255,255,0.8); font-size: 14px; margin-bottom: 20px;
     }
-
-    .setup-info a {
-      color: #f5a623;
-    }
-
-    @media (max-width: 600px) {
-      .form-row { flex-direction: column; }
-      .header h1 { font-size: 1.8rem; }
-    }
+    @media (max-width: 600px) { .form-row { flex-direction: column; } .header h1 { font-size: 1.8rem; } }
   </style>
 </head>
 <body>
@@ -296,33 +106,35 @@
 
   <div class="header">
     <h1>📝 My Notes</h1>
-    <p>Access from anywhere • No database • Shared across all systems</p>
+    <p>Stored on GitHub • Access from anywhere • No database</p>
   </div>
 
-  <!-- SETUP CARD (only shown if not configured) -->
+  <!-- SETUP CARD -->
   <div class="card" id="setupCard">
-    <h2>⚙️ One-Time Setup</h2>
+    <h2>⚙️ One-Time Setup (per device)</h2>
     <div class="setup-info">
-      1. Go to <a href="https://jsonbin.io" target="_blank">jsonbin.io</a> → Sign up free<br>
-      2. Create a Bin → Copy the <strong>Bin ID</strong> and <strong>API Key</strong><br>
-      3. Paste below and click Save Config
+      Enter your GitHub details below. Saved locally on this device only.
     </div>
     <div class="form-row">
       <div class="form-group">
-        <label>JSONBin API Key</label>
-        <input id="apiKeyInput" placeholder="$2a$10$..." />
+        <label>GitHub Username</label>
+        <input id="ghUser" placeholder="e.g. krishnm10" />
       </div>
       <div class="form-group">
-        <label>Bin ID</label>
-        <input id="binIdInput" placeholder="65f3a..." />
+        <label>Repository Name</label>
+        <input id="ghRepo" placeholder="e.g. my-notes-app" />
       </div>
     </div>
+    <div class="form-group" style="margin-bottom:14px">
+      <label>GitHub Personal Access Token (repo scope)</label>
+      <input id="ghToken" type="password" placeholder="ghp_xxxxxxxxxxxx" />
+    </div>
     <div class="btn-group">
-      <button class="btn btn-primary" onclick="saveConfig()">💾 Save Config & Connect</button>
+      <button class="btn btn-primary" onclick="saveConfig()">💾 Save & Connect</button>
     </div>
   </div>
 
-  <!-- WRITE NOTE CARD -->
+  <!-- WRITE NOTE -->
   <div class="card">
     <h2>✍️ Write a Note</h2>
     <div class="form-row">
@@ -336,183 +148,185 @@
       <textarea id="noteText" placeholder="Write your note here..."></textarea>
     </div>
     <div class="btn-group">
-      <button class="btn btn-primary" onclick="saveNote()">💾 Save Note</button>
-      <button class="btn btn-secondary" onclick="loadNotes()">🔄 Refresh Notes</button>
+      <button class="btn btn-primary" onclick="addNote()">💾 Save Note</button>
+      <button class="btn btn-secondary" onclick="loadNotes()">🔄 Refresh</button>
+      <button class="btn btn-secondary" onclick="showConfig()">⚙️ Settings</button>
     </div>
   </div>
 
   <!-- STATS -->
   <div class="stats" id="statsBar" style="display:none">
-    <div class="stat">
-      <div class="stat-value" id="totalNotes">0</div>
-      <div class="stat-label">Total Notes</div>
-    </div>
-    <div class="stat">
-      <div class="stat-value" id="totalAuthors">0</div>
-      <div class="stat-label">Authors</div>
-    </div>
-    <div class="stat">
-      <div class="stat-value" id="todayNotes">0</div>
-      <div class="stat-label">Today</div>
-    </div>
+    <div class="stat"><div class="stat-value" id="totalNotes">0</div><div class="stat-label">Total Notes</div></div>
+    <div class="stat"><div class="stat-value" id="totalAuthors">0</div><div class="stat-label">Authors</div></div>
+    <div class="stat"><div class="stat-value" id="todayNotes">0</div><div class="stat-label">Today</div></div>
   </div>
 
-  <!-- NOTES LIST CARD -->
+  <!-- NOTES LIST -->
   <div class="card">
     <h2>📋 All Notes</h2>
-
     <div class="search-bar">
       <span>🔍</span>
       <input id="searchInput" placeholder="Search notes..." oninput="filterNotes()" />
     </div>
-
-    <div class="notes-list" id="notesList">
-      <div class="empty-state">
-        <div>🔌</div>
-        <p>Configure JSONBin above to load notes</p>
-      </div>
+    <div id="notesList">
+      <div class="empty-state"><div>🔌</div><p>Configure GitHub settings above to load notes</p></div>
     </div>
   </div>
 
 </div>
-
-<!-- Toast Notification -->
 <div class="toast" id="toast"></div>
 
 <script>
-  const STORAGE_KEY_API   = 'nb_api_key';
-  const STORAGE_KEY_BIN   = 'nb_bin_id';
-  const STORAGE_KEY_NAME  = 'nb_author';
-
   let allNotes = [];
+  let fileSHA  = '';
 
-  // ─── Init ───────────────────────────────────────────────
+  const LS_USER  = 'gh_user';
+  const LS_REPO  = 'gh_repo';
+  const LS_TOKEN = 'gh_token';
+  const LS_NAME  = 'gh_author';
+
+  // ─── Init ────────────────────────────────────────────────
   window.onload = function () {
-    const apiKey = localStorage.getItem(STORAGE_KEY_API);
-    const binId  = localStorage.getItem(STORAGE_KEY_BIN);
-    const author = localStorage.getItem(STORAGE_KEY_NAME);
+    const user  = localStorage.getItem(LS_USER);
+    const repo  = localStorage.getItem(LS_REPO);
+    const token = localStorage.getItem(LS_TOKEN);
+    const name  = localStorage.getItem(LS_NAME);
 
-    if (author) document.getElementById('authorName').value = author;
+    if (name)  document.getElementById('authorName').value = name;
 
-    if (apiKey && binId) {
+    if (user && repo && token) {
       document.getElementById('setupCard').style.display = 'none';
       loadNotes();
     } else {
-      document.getElementById('apiKeyInput').value = apiKey || '';
-      document.getElementById('binIdInput').value  = binId  || '';
+      document.getElementById('ghUser').value  = user  || '';
+      document.getElementById('ghRepo').value  = repo  || '';
+      document.getElementById('ghToken').value = token || '';
     }
   };
 
   // ─── Save Config ─────────────────────────────────────────
   function saveConfig() {
-    const apiKey = document.getElementById('apiKeyInput').value.trim();
-    const binId  = document.getElementById('binIdInput').value.trim();
-    if (!apiKey || !binId) return showToast('Enter both API Key and Bin ID', 'error');
-    localStorage.setItem(STORAGE_KEY_API, apiKey);
-    localStorage.setItem(STORAGE_KEY_BIN, binId);
+    const user  = document.getElementById('ghUser').value.trim();
+    const repo  = document.getElementById('ghRepo').value.trim();
+    const token = document.getElementById('ghToken').value.trim();
+    if (!user || !repo || !token) return showToast('Fill all fields', 'error');
+    localStorage.setItem(LS_USER, user);
+    localStorage.setItem(LS_REPO, repo);
+    localStorage.setItem(LS_TOKEN, token);
     document.getElementById('setupCard').style.display = 'none';
     showToast('Config saved!', 'success');
     loadNotes();
   }
 
-  // ─── Load Notes from JSONBin ──────────────────────────────
-  async function loadNotes() {
-    const apiKey = localStorage.getItem(STORAGE_KEY_API);
-    const binId  = localStorage.getItem(STORAGE_KEY_BIN);
-    if (!apiKey || !binId) return;
+  function showConfig() {
+    document.getElementById('setupCard').style.display = 'block';
+    window.scrollTo(0,0);
+  }
 
+  // ─── GitHub API helpers ──────────────────────────────────
+  function apiUrl() {
+    const user = localStorage.getItem(LS_USER);
+    const repo = localStorage.getItem(LS_REPO);
+    return `https://api.github.com/repos/${user}/${repo}/contents/notes.json`;
+  }
+
+  function headers() {
+    return {
+      'Authorization': `token ${localStorage.getItem(LS_TOKEN)}`,
+      'Content-Type':  'application/json',
+      'Accept':        'application/vnd.github.v3+json'
+    };
+  }
+
+  // ─── Load Notes ──────────────────────────────────────────
+  async function loadNotes() {
     showToast('Loading notes...', 'loading');
     try {
-      const res = await fetch(`https://api.jsonbin.io/v3/b/${binId}/latest`, {
-        headers: { 'X-Master-Key': apiKey }
-      });
+      const res  = await fetch(apiUrl(), { headers: headers() });
       const data = await res.json();
-      allNotes = data.record.notes || [];
+      fileSHA  = data.sha;
+      const content = JSON.parse(atob(data.content.replace(/\n/g, '')));
+      allNotes = content.notes || [];
       displayNotes(allNotes);
       updateStats(allNotes);
       showToast(`${allNotes.length} notes loaded`, 'success');
-    } catch (err) {
-      showToast('Failed to load. Check API Key & Bin ID', 'error');
+    } catch (e) {
+      showToast('Load failed. Check settings.', 'error');
     }
   }
 
-  // ─── Save Note to JSONBin ─────────────────────────────────
-  async function saveNote() {
+  // ─── Add Note ────────────────────────────────────────────
+  async function addNote() {
     const author = document.getElementById('authorName').value.trim();
     const text   = document.getElementById('noteText').value.trim();
     if (!author || !text) return showToast('Fill name & note', 'error');
+    if (!fileSHA) return showToast('Load notes first (click Refresh)', 'error');
 
-    const apiKey = localStorage.getItem(STORAGE_KEY_API);
-    const binId  = localStorage.getItem(STORAGE_KEY_BIN);
-    if (!apiKey || !binId) return showToast('Setup not done!', 'error');
-
-    localStorage.setItem(STORAGE_KEY_NAME, author);
+    localStorage.setItem(LS_NAME, author);
 
     const newNote = {
-      id: Date.now(),
-      author,
-      text,
+      id: Date.now(), author, text,
       timestamp: new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })
     };
 
-    const updatedNotes = [newNote, ...allNotes];
+    const updated = [newNote, ...allNotes];
+    showToast('Saving to GitHub...', 'loading');
 
-    showToast('Saving...', 'loading');
     try {
-      await fetch(`https://api.jsonbin.io/v3/b/${binId}`, {
+      const res = await fetch(apiUrl(), {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Master-Key': apiKey
-        },
-        body: JSON.stringify({ notes: updatedNotes })
+        headers: headers(),
+        body: JSON.stringify({
+          message: `Add note by ${author}`,
+          content: btoa(JSON.stringify({ notes: updated })),
+          sha: fileSHA
+        })
       });
-      allNotes = updatedNotes;
+      const data = await res.json();
+      fileSHA  = data.content.sha;
+      allNotes = updated;
       displayNotes(allNotes);
       updateStats(allNotes);
       document.getElementById('noteText').value = '';
-      showToast('Note saved!', 'success');
-    } catch (err) {
+      showToast('Note saved to GitHub!', 'success');
+    } catch (e) {
       showToast('Save failed. Try again.', 'error');
     }
   }
 
-  // ─── Delete Note ──────────────────────────────────────────
+  // ─── Delete Note ─────────────────────────────────────────
   async function deleteNote(id) {
     if (!confirm('Delete this note?')) return;
-
-    const apiKey = localStorage.getItem(STORAGE_KEY_API);
-    const binId  = localStorage.getItem(STORAGE_KEY_BIN);
-
-    allNotes = allNotes.filter(n => n.id !== id);
-
+    const updated = allNotes.filter(n => n.id !== id);
     try {
-      await fetch(`https://api.jsonbin.io/v3/b/${binId}`, {
+      const res = await fetch(apiUrl(), {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Master-Key': apiKey
-        },
-        body: JSON.stringify({ notes: allNotes })
+        headers: headers(),
+        body: JSON.stringify({
+          message: 'Delete note',
+          content: btoa(JSON.stringify({ notes: updated })),
+          sha: fileSHA
+        })
       });
+      const data = await res.json();
+      fileSHA  = data.content.sha;
+      allNotes = updated;
       displayNotes(allNotes);
       updateStats(allNotes);
       showToast('Note deleted!', 'success');
-    } catch (err) {
+    } catch (e) {
       showToast('Delete failed', 'error');
     }
   }
 
-  // ─── Display Notes ────────────────────────────────────────
+  // ─── Display ─────────────────────────────────────────────
   function displayNotes(notes) {
-    const div = document.getElementById('notesList');
     document.getElementById('statsBar').style.display = 'flex';
-
+    const div = document.getElementById('notesList');
     if (!notes.length) {
       div.innerHTML = `<div class="empty-state"><div>📝</div><p>No notes yet. Write one above!</p></div>`;
       return;
     }
-
     div.innerHTML = notes.map(n => `
       <div class="note-card">
         <div class="note-meta">
@@ -523,35 +337,29 @@
           </div>
         </div>
         <div class="note-text">${n.text}</div>
-      </div>
-    `).join('');
+      </div>`).join('');
   }
 
-  // ─── Filter Notes ─────────────────────────────────────────
   function filterNotes() {
     const q = document.getElementById('searchInput').value.toLowerCase();
-    const filtered = allNotes.filter(n =>
-      n.author.toLowerCase().includes(q) ||
-      n.text.toLowerCase().includes(q)
-    );
-    displayNotes(filtered);
+    displayNotes(allNotes.filter(n =>
+      n.author.toLowerCase().includes(q) || n.text.toLowerCase().includes(q)
+    ));
   }
 
-  // ─── Stats ────────────────────────────────────────────────
   function updateStats(notes) {
-    const today = new Date().toLocaleDateString('en-IN');
-    document.getElementById('totalNotes').textContent = notes.length;
+    document.getElementById('totalNotes').textContent   = notes.length;
     document.getElementById('totalAuthors').textContent = [...new Set(notes.map(n => n.author))].length;
-    document.getElementById('todayNotes').textContent = notes.filter(n => n.timestamp.includes(today.split('/')[0])).length;
+    const today = new Date().toLocaleDateString('en-IN', {day:'2-digit'});
+    document.getElementById('todayNotes').textContent   = notes.filter(n => n.timestamp.startsWith(today)).length;
   }
 
-  // ─── Toast ────────────────────────────────────────────────
   function showToast(msg, type = 'success') {
     const t = document.getElementById('toast');
     t.textContent = msg;
     t.className = `toast ${type} show`;
-    clearTimeout(window._toastTimer);
-    window._toastTimer = setTimeout(() => t.className = 'toast', 3000);
+    clearTimeout(window._tt);
+    window._tt = setTimeout(() => t.className = 'toast', 3000);
   }
 </script>
 </body>
