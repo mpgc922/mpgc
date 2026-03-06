@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>📝 My Notes App</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); min-height: 100vh; padding: 20px; }
+    .container { max-width: 960px; margin: 0 auto; }
+    .header { text-align: center; padding: 40px 0 30px; }
+    .header h1 { font-size: 2.5rem; font-weight: 700; background: linear-gradient(135deg, #e96c75, #f5a623); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 8px; }
+    .header p { color: rgba(255,255,255,0.5); font-size: 14px; }
+    .card { background: rgba(255,255,255,0.05); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 28px; margin-bottom: 20px; }
+    .card h2 { color: white; font-size: 1.1rem; font-weight: 600; margin-bottom: 20px; }
+    .form-row { display: flex; gap: 12px; margin-bottom: 14px; flex-wrap: wrap; }
+    .form-group { flex: 1; min-width: 200px; margin-bottom: 14px; }
+    label { display: block; color: rgba(255,255,255,0.7); font-size: 13px; font-weight: 500; margin-bottom: 6px; }
+    input, textarea, select { width: 100%; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; padding: 13px 16px; color: white; font-family: 'Inter', sans-serif; font-size: 14px; transition: all 0.3s; outline: none; }
+    select option { background: #1a1a2e; color: white; }
+    input::placeholder, textarea::placeholder { color: rgba(255,255,255,0.3); }
+    input:focus, textarea:focus, select:focus { border-color: #e96c75; background: rgba(255,255,255,0.12); box-shadow: 0 0 0 3px rgba(233,108,117,0.15); }
+    textarea { height: 120px; resize: vertical; }
+    .btn-group { display: flex; gap: 10px; flex-wrap: wrap; }
+    .btn { padding: 12px 20px; border: none; border-radius: 12px; font-family: 'Inter', sans-serif; font-weight: 600; font-size: 13px; cursor: pointer; transition: all 0.3s; }
+    .btn-primary { background: linear-gradient(135deg, #e96c75, #f5a623); color: white; }
+    .btn-secondary { background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.2); }
+    .btn-danger { background: rgba(220,53,69,0.2); color: #ff6b7a; border: 1px solid rgba(220,53,69,0.3); }
+    .btn-success { background: rgba(40,167,69,0.2); color: #5fdb80; border: 1px solid rgba(40,167,69,0.3); }
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.3); }
+    .toast { position: fixed; top: 20px; right: 20px; padding: 14px 20px; border-radius: 12px; font-weight: 500; font-size: 14px; opacity: 0; transition: all 0.3s; z-index: 9999; min-width: 240px; text-align: center; }
+    .toast.show { opacity: 1; }
+    .toast.success { background: #28a745; color: white; }
+    .toast.error { background: #dc3545; color: white; }
+    .toast.loading { background: #007bff; color: white; }
+    .stats { display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
+    .stat { flex: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px; text-align: center; min-width: 80px; }
+    .stat-value { font-size: 26px; font-weight: 700; color: #e96c75; }
+    .stat-label { font-size: 11px; color: rgba(255,255,255,0.5); margin-top: 4px; }
+    .filter-bar { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+    .filter-btn { padding: 7px 16px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.6); font-size: 13px; cursor: pointer; transition: all 0.3s; }
+    .filter-btn.active { background: linear-gradient(135deg, #e96c75, #f5a623); color: white; border-color: transparent; }
+    .search-bar { position: relative; margin-bottom: 16px; }
+    .search-bar input { padding-left: 44px; }
+    .search-bar span { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: rgba(255,255,255,0.4); }
+    .note-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 20px; margin-bottom: 14px; transition: all 0.3s; position: relative; }
+    .note-card:hover { background: rgba(255,255,255,0.08); transform: translateX(4px); }
+    .note-card.pinned { border-left: 4px solid #f5a623; }
+    .note-card.type-task { border-left: 4px solid #5fdb80; }
+    .note-card.type-meeting { border-left: 4px solid #7b9cff; }
+    .note-card.type-idea { border-left: 4px solid #f5a623; }
+    .note-card.type-note { border-left: 4px solid #e96c75; }
+    .note-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; flex-wrap: wrap; gap: 8px; }
+    .note-author { font-weight: 600; color: #f5a623; font-size: 15px; }
+    .note-time { font-size: 11px; color: rgba(255,255,255,0.4); }
+    .note-text { color: rgba(255,255,255,0.85); line-height: 1.7; font-size: 14px; white-space: pre-wrap; margin-bottom: 12px; }
+    .note-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+    .action-btn { padding: 5px 12px; border-radius: 8px; font-size: 12px; cursor: pointer; border: none; font-family: 'Inter', sans-serif; transition: all 0.3s; }
+    .edit-btn { background: rgba(99,102,241,0.2); color: #a5b4fc; border: 1px solid rgba(99,102,241,0.3); }
+    .delete-btn { background: rgba(220,53,69,0.2); color: #ff6b7a; border: 1px solid rgba(220,53,69,0.3); }
+    .pin-btn { background: rgba(245,166,35,0.2); color: #f5a623; border: 1px solid rgba(245,166,35,0.3); }
+    .action-btn:hover { transform: translateY(-1px); }
+    .tags-row { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+    .tag { padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight: 500; background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.7); }
+    .type-badge { padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight: 600; }
+    .badge-note { background: rgba(233,108,117,0.2); color: #e96c75; }
+    .badge-task { background: rgba(95,219,128,0.2); color: #5fdb80; }
+    .badge-meeting { background: rgba(123,156,255,0.2); color: #7b9cff; }
+    .badge-idea { background: rgba(245,166,35,0.2); color: #f5a623; }
+    .pin-icon { position: absolute; top: 14px; right: 14px; font-size: 16px; }
+    .empty-state { text-align: center; padding: 50px 20px; color: rgba(255,255,255,0.3); }
+    .empty-state div { font-size: 48px; margin-bottom: 12px; }
+    .edit-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 1000; align-items: center; justify-content: center; padding: 20px; }
+    .edit-modal.open { display: flex; }
+    .edit-box { background: #1a1a2e; border: 1px solid rgba(255,255,255,0.2); border-radius: 20px; padding: 28px; width: 100%; max-width: 600px; }
+    .edit-box h3 { color: white; margin-bottom: 20px; }
+    .connected-badge { display: inline-block; background: rgba(40,167,69,0.2); border: 1px solid rgba(40,167,69,0.4); color: #5fdb80; padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 500; margin-bottom: 16px; }
+    .setup-info { background: rgba(245,166,35,0.1); border: 1px solid rgba(245,166,35,0.3); border-radius: 12px; padding: 16px; color: rgba(255,255,255,0.8); font-size: 14px; margin-bottom: 20px; line-height: 1.8; }
+    .file-list { margin-top: 16px; }
+    .file-item { display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 12px 16px; margin-bottom: 8px; }
+    .file-name { color: rgba(255,255,255,0.8); font-size: 14px; }
+    .file-link { color: #7b9cff; font-size: 12px; text-decoration: none; }
+    .file-link:hover { text-decoration: underline; }
+    .progress-bar { width: 100%; height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; margin-top: 10px; display: none; }
+    .progress-fill { height: 100%; background: linear-gradient(135deg, #e96c75, #f5a623); border-radius: 3px; width: 0%; transition: width 0.3s; }
+    @media (max-width: 600px) { .header h1 { font-size: 1.8rem; } .note-actions { flex-direction: column; } }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <div class="header">
+    <h1>📝 My Notes</h1>
+    <p>GitHub Storage • Edit • Upload Docs • Tags • Pin • Export</p>
+  </div>
+
+  <!-- SETUP -->
+  <div class="card" id="setupCard">
+    <h2>⚙️ One-Time Setup</h2>
+    <div class="setup-info">
+      📌 Repo: <strong>mpgc922/mpgc</strong> &nbsp;|&nbsp; File: <strong>dist/notes.json</strong><br>
+      Enter your GitHub Personal Access Token (Settings → Developer Settings → PAT Classic → repo scope ✅)
+    </div>
+    <div class="form-group">
+      <label>GitHub Personal Access Token</label>
+      <input id="ghToken" type="password" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" />
+    </div>
+    <div class="btn-group">
+      <button class="btn btn-primary" onclick="saveConfig()">🔗 Connect to GitHub</button>
+    </div>
+  </div>
+
+  <!-- WRITE NOTE -->
+  <div class="card" id="writeCard" style="display:none">
+    <div class="connected-badge">✅ Connected to mpgc922/mpgc</div>
+    <h2>✍️ Write a Note</h2>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Your Name</label>
+        <input id="authorName" placeholder="Enter your name" />
+      </div>
+      <div class="form-group">
+        <label>Type</label>
+        <select id="noteType">
+          <option value="note">📝 Note</option>
+          <option value="task">✅ Task</option>
+          <option value="meeting">🤝 Meeting</option>
+          <option value="idea">💡 Idea</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Tags (comma separated)</label>
+      <input id="noteTags" placeholder="e.g. work, urgent, project-k" />
+    </div>
+    <div class="form-group">
+      <label>Note</label>
+      <textarea id="noteText" placeholder="Write your note here..."></textarea>
+    </div>
+    <div class="btn-group">
+      <button class="btn btn-primary"   onclick="addNote()">💾 Save Note</button>
+      <button class="btn btn-secondary" onclick="loadNotes()">🔄 Refresh</button>
+      <button class="btn btn-secondary" onclick="exportCSV()">📤 Export CSV</button>
+      <button class="btn btn-secondary" onclick="showConfig()">⚙️ Token</button>
+    </div>
+  </div>
+
+  <!-- FILE UPLOAD -->
+  <div class="card" id="uploadCard" style="display:none">
+    <h2>📎 Upload Document / File</h2>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Select File (PDF, Image, Doc, etc.)</label>
+        <input type="file" id="fileInput" onchange="previewFile()" />
+      </div>
+      <div class="form-group">
+        <label>Folder in Repo (optional)</label>
+        <input id="folderName" placeholder="e.g. dist/docs" value="dist/docs" />
+      </div>
+    </div>
+    <div class="progress-bar" id="progressBar">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+    <div class="btn-group" style="margin-top:10px">
+      <button class="btn btn-primary" onclick="uploadFile()">⬆️ Upload to GitHub</button>
+    </div>
+    <div id="fileList" class="file-list"></div>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats" id="statsBar" style="display:none">
+    <div class="stat"><div class="stat-value" id="totalNotes">0</div><div class="stat-label">Notes</div></div>
+    <div class="stat"><div class="stat-value" id="totalAuthors">0</div><div class="stat-label">Authors</div></div>
+    <div class="stat"><div class="stat-value" id="todayNotes">0</div><div class="stat-label">Today</div></div>
+    <div class="stat"><div class="stat-value" id="pinnedCount">0</div><div class="stat-label">Pinned</div></div>
+    <div class="stat"><div class="stat-value" id="totalFiles">0</div><div class="stat-label">Files</div></div>
+  </div>
+
+  <!-- NOTES LIST -->
+  <div class="card" id="notesCard" style="display:none">
+    <h2>📋 All Notes</h2>
+
+    <!-- Filter by type -->
+    <div class="filter-bar" id="typeFilters">
+      <button class="filter-btn active" onclick="setFilter('all',this)">All</button>
+      <button class="filter-btn" onclick="setFilter('note',this)">📝 Note</button>
+      <button class="filter-btn" onclick="setFilter('task',this)">✅ Task</button>
+      <button class="filter-btn" onclick="setFilter('meeting',this)">🤝 Meeting</button>
+      <button class="filter-btn" onclick="setFilter('idea',this)">💡 Idea</button>
+      <button class="filter-btn" onclick="setFilter('pinned',this)">📌 Pinned</button>
+    </div>
+
+    <div class="search-bar">
+      <span>🔍</span>
+      <input id="searchInput" placeholder="Search by name, note or tag..." oninput="applyFilters()" />
+    </div>
+
+    <div id="notesList"></div>
+  </div>
+
+</div>
+
+<!-- EDIT MODAL -->
+<div class="edit-modal" id="editModal">
+  <div class="edit-box">
+    <h3>✏️ Edit Note</h3>
+    <input type="hidden" id="editId" />
+    <div class="form-group">
+      <label>Author</label>
+      <input id="editAuthor" placeholder="Your name" />
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Type</label>
+        <select id="editType">
+          <option value="note">📝 Note</option>
+          <option value="task">✅ Task</option>
+          <option value="meeting">🤝 Meeting</option>
+          <option value="idea">💡 Idea</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Tags</label>
+        <input id="editTags" placeholder="work, urgent" />
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Note</label>
+      <textarea id="editText" style="height:140px"></textarea>
+    </div>
+    <div class="btn-group">
+      <button class="btn btn-primary"   onclick="saveEdit()">💾 Save Changes</button>
+      <button class="btn btn-secondary" onclick="closeEdit()">✖ Cancel</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  const GH_USER  = 'mpgc922';
+  const GH_REPO  = 'mpgc';
+  const GH_FILE  = 'dist/notes.json';
+  const LS_TOKEN = 'gh_token';
+  const LS_NAME  = 'gh_author';
+
+  let allNotes    = [];
+  let fileSHA     = '';
+  let activeFilter = 'all';
+  let uploadedFiles = [];
+
+  // ── Init ──────────────────────────────────────────────────
+  window.onload = function () {
+    const token = localStorage.getItem(LS_TOKEN);
+    const name  = localStorage.getItem(LS_NAME);
+    if (name) document.getElementById('authorName').value = name;
+    if (token) {
+      document.getElementById('ghToken').value = token;
+      showAppCards();
+      loadNotes();
+      loadFileList();
+    }
+  };
+
+  function saveConfig() {
+    const token = document.getElementById('ghToken').value.trim();
+    if (!token) return showToast('Enter your GitHub token', 'error');
+    localStorage.setItem(LS_TOKEN, token);
+    showAppCards();
+    loadNotes();
+    loadFileList();
+  }
+
+  function showAppCards() {
+    document.getElementById('setupCard').style.display  = 'none';
+    document.getElementById('writeCard').style.display  = 'block';
+    document.getElementById('uploadCard').style.display = 'block';
+  }
+
+  function showConfig() {
+    ['setupCard','writeCard','uploadCard','notesCard','statsBar']
+      .forEach(id => document.getElementById(id).style.display = id === 'setupCard' ? 'block' : 'none');
+  }
+
+  // ── Helpers ───────────────────────────────────────────────
+  function apiUrl(path) {
+    return `https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${path}`;
+  }
+  function headers() {
+    return { 'Authorization': `token ${localStorage.getItem(LS_TOKEN)}`, 'Content-Type': 'application/json', 'Accept': 'application/vnd.github.v3+json' };
+  }
+  function b64(str) { return btoa(unescape(encodeURIComponent(str))); }
+
+  // ── Load Notes ────────────────────────────────────────────
+  async function loadNotes() {
+    showToast('Loading notes...', 'loading');
+    try {
+      const res  = await fetch(apiUrl(GH_FILE), { headers: headers() });
+      if (!res.ok) { const e = await res.json(); return showToast(`${res.status}: ${e.message}`, 'error'); }
+      const data = await res.json();
+      fileSHA    = data.sha;
+      const dec  = JSON.parse(atob(data.content.replace(/\n/g,'')));
+      allNotes   = dec.notes || [];
+      applyFilters();
+      updateStats();
+      document.getElementById('notesCard').style.display = 'block';
+      document.getElementById('statsBar').style.display  = 'flex';
+      showToast(`${allNotes.length} notes loaded ✅`, 'success');
+    } catch(e) { showToast('Load failed: ' + e.message, 'error'); }
+  }
+
+  // ── Save to GitHub ────────────────────────────────────────
+  async function saveNotes(notes, msg) {
+    const res = await fetch(apiUrl(GH_FILE), {
+      method: 'PUT', headers: headers(),
+      body: JSON.stringify({ message: msg, content: b64(JSON.stringify({ notes })), sha: fileSHA })
+    });
+    if (!res.ok) { const e = await res.json(); throw new Error(e.message); }
+    const data = await res.json();
+    fileSHA  = data.content.sha;
+    allNotes = notes;
+  }
+
+  // ── Add Note ──────────────────────────────────────────────
+  async function addNote() {
+    const author = document.getElementById('authorName').value.trim();
+    const text   = document.getElementById('noteText').value.trim();
+    const type   = document.getElementById('noteType').value;
+    const tags   = document.getElementById('noteTags').value.split(',').map(t=>t.trim()).filter(Boolean);
+    if (!author || !text) return showToast('Fill name & note', 'error');
+    if (!fileSHA) return showToast('Click Refresh first', 'error');
+    localStorage.setItem(LS_NAME, author);
+    const newNote = { id: Date.now(), author, text, type, tags, pinned: false, timestamp: new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }), edited: false };
+    showToast('Saving...', 'loading');
+    try {
+      await saveNotes([newNote, ...allNotes], `Add ${type} by ${author}`);
+      applyFilters(); updateStats();
+      document.getElementById('noteText').value = '';
+      document.getElementById('noteTags').value = '';
+      showToast('Note saved! 🎉', 'success');
+    } catch(e) { showToast('Save failed: ' + e.message, 'error'); }
+  }
+
+  // ── Delete ────────────────────────────────────────────────
+  async function deleteNote(id) {
+    if (!confirm('Delete this note?')) return;
+    showToast('Deleting...', 'loading');
+    try {
+      await saveNotes(allNotes.filter(n => n.id !== id), 'Delete note');
+      applyFilters(); updateStats();
+      showToast('Deleted!', 'success');
+    } catch(e) { showToast('Delete failed', 'error'); }
+  }
+
+  // ── Pin ───────────────────────────────────────────────────
+  async function togglePin(id) {
+    const updated = allNotes.map(n => n.id === id ? {...n, pinned: !n.pinned} : n);
+    try {
+      await saveNotes(updated, 'Toggle pin');
+      applyFilters(); updateStats();
+      showToast('Pin updated!', 'success');
+    } catch(e) { showToast('Failed', 'error'); }
+  }
+
+  // ── Edit ──────────────────────────────────────────────────
+  function openEdit(id) {
+    const n = allNotes.find(n => n.id === id);
+    if (!n) return;
+    document.getElementById('editId').value     = id;
+    document.getElementById('editAuthor').value  = n.author;
+    document.getElementById('editText').value    = n.text;
+    document.getElementById('editType').value    = n.type || 'note';
+    document.getElementById('editTags').value    = (n.tags || []).join(', ');
+    document.getElementById('editModal').classList.add('open');
+  }
+
+  function closeEdit() { document.getElementById('editModal').classList.remove('open'); }
+
+  async function saveEdit() {
+    const id     = parseInt(document.getElementById('editId').value);
+    const author = document.getElementById('editAuthor').value.trim();
+    const text   = document.getElementById('editText').value.trim();
+    const type   = document.getElementById('editType').value;
+    const tags   = document.getElementById('editTags').value.split(',').map(t=>t.trim()).filter(Boolean);
+    if (!author || !text) return showToast('Fill all fields', 'error');
+    const updated = allNotes.map(n => n.id === id
+      ? {...n, author, text, type, tags, edited: true, editedAt: new Date().toLocaleString('en-IN', {timeZone:'Asia/Kolkata'})}
+      : n);
+    showToast('Saving edit...', 'loading');
+    try {
+      await saveNotes(updated, `Edit note by ${author}`);
+      closeEdit(); applyFilters(); updateStats();
+      showToast('Note updated! ✅', 'success');
+    } catch(e) { showToast('Edit failed: ' + e.message, 'error'); }
+  }
+
+  // ── File Upload ───────────────────────────────────────────
+  function previewFile() {
+    const file = document.getElementById('fileInput').files[0];
+    if (file) showToast(`Selected: ${file.name}`, 'success');
+  }
+
+  async function uploadFile() {
+    const fileInput = document.getElementById('fileInput');
+    const folder    = document.getElementById('folderName').value.trim() || 'dist/docs';
+    const file      = fileInput.files[0];
+    if (!file) return showToast('Select a file first', 'error');
+
+    const reader = new FileReader();
+    reader.onload = async function(e) {
+      const base64 = e.target.result.split(',')[1];
+      const path   = `${folder}/${file.name}`;
+
+      document.getElementById('progressBar').style.display = 'block';
+      document.getElementById('progressFill').style.width  = '30%';
+      showToast('Uploading...', 'loading');
+
+      try {
+        // Check if file exists (get SHA if so)
+        let existingSHA = '';
+        const check = await fetch(apiUrl(path), { headers: headers() });
+        if (check.ok) { const d = await check.json(); existingSHA = d.sha; }
+
+        document.getElementById('progressFill').style.width = '60%';
+
+        const body = { message: `Upload ${file.name}`, content: base64 };
+        if (existingSHA) body.sha = existingSHA;
+
+        const res = await fetch(apiUrl(path), {
+          method: 'PUT', headers: headers(), body: JSON.stringify(body)
+        });
+
+        document.getElementById('progressFill').style.width = '100%';
+
+        if (!res.ok) { const err = await res.json(); throw new Error(err.message); }
+
+        showToast(`${file.name} uploaded! ✅`, 'success');
+        fileInput.value = '';
+        setTimeout(() => {
+          document.getElementById('progressBar').style.display = 'none';
+          document.getElementById('progressFill').style.width  = '0%';
+        }, 1500);
+        loadFileList();
+      } catch(e) {
+        document.getElementById('progressBar').style.display = 'none';
+        showToast('Upload failed: ' + e.message, 'error');
+      }
+    };
+    reader.readAsDataURL(file);
+  }
+
+  // ── Load File List ────────────────────────────────────────
+  async function loadFileList() {
+    const folder = document.getElementById('folderName')?.value.trim() || 'dist/docs';
+    try {
+      const res  = await fetch(apiUrl(folder), { headers: headers() });
+      if (!res.ok) return;
+      const files = await res.json();
+      uploadedFiles = Array.isArray(files) ? files.filter(f => f.type === 'file') : [];
+      renderFileList();
+      updateStats();
+    } catch(e) {}
+  }
+
+  function renderFileList() {
+    const div = document.getElementById('fileList');
+    if (!uploadedFiles.length) { div.innerHTML = '<p style="color:rgba(255,255,255,0.4);font-size:13px;margin-top:12px">No files uploaded yet</p>'; return; }
+    div.innerHTML = '<p style="color:rgba(255,255,255,0.6);font-size:13px;margin:12px 0 8px">📁 Uploaded Files:</p>' +
+      uploadedFiles.map(f => `
+        <div class="file-item">
+          <span class="file-name">📄 ${f.name}</span>
+          <a class="file-link" href="${f.download_url}" target="_blank">⬇ Download</a>
+        </div>`).join('');
+  }
+
+  // ── Filters ───────────────────────────────────────────────
+  function setFilter(type, btn) {
+    activeFilter = type;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    applyFilters();
+  }
+
+  function applyFilters() {
+    const q = (document.getElementById('searchInput')?.value || '').toLowerCase();
+    let filtered = [...allNotes];
+
+    // Pinned always on top
+    filtered.sort((a,b) => (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0));
+
+    if (activeFilter === 'pinned') filtered = filtered.filter(n => n.pinned);
+    else if (activeFilter !== 'all') filtered = filtered.filter(n => n.type === activeFilter);
+
+    if (q) filtered = filtered.filter(n =>
+      n.author.toLowerCase().includes(q) ||
+      n.text.toLowerCase().includes(q) ||
+      (n.tags || []).some(t => t.toLowerCase().includes(q))
+    );
+
+    displayNotes(filtered);
+  }
+
+  // ── Display ───────────────────────────────────────────────
+  function displayNotes(notes) {
+    const div = document.getElementById('notesList');
+    if (!notes.length) {
+      div.innerHTML = `<div class="empty-state"><div>📝</div><p>No notes found</p></div>`;
+      return;
+    }
+    const typeEmoji = { note:'📝', task:'✅', meeting:'🤝', idea:'💡' };
+    div.innerHTML = notes.map(n => `
+      <div class="note-card type-${n.type || 'note'} ${n.pinned ? 'pinned' : ''}">
+        ${n.pinned ? '<div class="pin-icon">📌</div>' : ''}
+        <div class="note-header">
+          <div>
+            <div class="note-author">👤 ${n.author}</div>
+            <div class="note-time">🕐 ${n.timestamp}${n.edited ? ` &nbsp;✏️ edited ${n.editedAt}` : ''}</div>
+          </div>
+          <span class="type-badge badge-${n.type || 'note'}">${typeEmoji[n.type]||'📝'} ${n.type||'note'}</span>
+        </div>
+        ${n.tags?.length ? `<div class="tags-row">${n.tags.map(t=>`<span class="tag">🏷 ${t}</span>`).join('')}</div>` : ''}
+        <div class="note-text">${n.text}</div>
+        <div class="note-actions">
+          <button class="action-btn edit-btn"   onclick="openEdit(${n.id})">✏️ Edit</button>
+          <button class="action-btn pin-btn"    onclick="togglePin(${n.id})">${n.pinned ? '📌 Unpin' : '📌 Pin'}</button>
+          <button class="action-btn delete-btn" onclick="deleteNote(${n.id})">🗑 Delete</button>
+        </div>
+      </div>`).join('');
+  }
+
+  // ── Export CSV ────────────────────────────────────────────
+  function exportCSV() {
+    if (!allNotes.length) return showToast('No notes to export', 'error');
+    const header = ['ID','Author','Type','Tags','Note','Timestamp','Pinned','Edited'];
+    const rows   = allNotes.map(n => [
+      n.id, `"${n.author}"`, n.type || 'note',
+      `"${(n.tags||[]).join(';')}"`,
+      `"${n.text.replace(/"/g,'""')}"`,
+      `"${n.timestamp}"`, n.pinned, n.edited||false
+    ]);
+    const csv  = [header, ...rows].map(r => r.join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href     = url;
+    a.download = `notes-${new Date().toISOString().slice(0,10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast('CSV exported!', 'success');
+  }
+
+  // ── Stats ─────────────────────────────────────────────────
+  function updateStats() {
+    document.getElementById('totalNotes').textContent   = allNotes.length;
+    document.getElementById('totalAuthors').textContent = [...new Set(allNotes.map(n=>n.author))].length;
+    document.getElementById('pinnedCount').textContent  = allNotes.filter(n=>n.pinned).length;
+    document.getElementById('totalFiles').textContent   = uploadedFiles.length;
+    const today = new Date().toLocaleDateString('en-IN');
+    document.getElementById('todayNotes').textContent   = allNotes.filter(n => n.timestamp.includes(today.split('/')[0])).length;
+  }
+
+  // ── Toast ─────────────────────────────────────────────────
+  function showToast(msg, type='success') {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.className = `toast ${type} show`;
+    clearTimeout(window._tt);
+    window._tt = setTimeout(() => t.className = 'toast', 4000);
+  }
+</script>
+</body>
+</html>
